@@ -1,0 +1,82 @@
+<div class="items-page">
+  <div class="page-header">
+    <h1>Browse Items</h1>
+    <p class="subtitle">Search and filter through reported lost and found items</p>
+  </div>
+
+  <div class="search-bar">
+    <div class="search-input-wrapper">
+      <span class="search-icon">🔍</span>
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        (ngModelChange)="onSearchChange()"
+        placeholder="Search by title, description, or location..."
+        class="search-input"
+      />
+    </div>
+  </div>
+
+  <div class="filters">
+    <select [(ngModel)]="filterType" (ngModelChange)="onFilterChange()" class="filter-select">
+      <option value="">All Types</option>
+      <option value="lost">🔴 Lost</option>
+      <option value="found">🟢 Found</option>
+    </select>
+
+    <select [(ngModel)]="filterCategory" (ngModelChange)="onFilterChange()" class="filter-select">
+      <option value="">All Categories</option>
+      @for (cat of categories; track cat.value) {
+        <option [value]="cat.value">{{ cat.icon }} {{ cat.label }}</option>
+      }
+    </select>
+
+    <select [(ngModel)]="filterStatus" (ngModelChange)="onFilterChange()" class="filter-select">
+      <option value="">All Statuses</option>
+      <option value="open">⏳ Open</option>
+      <option value="claimed">🤝 Claimed</option>
+      <option value="resolved">✅ Resolved</option>
+    </select>
+
+    <button class="btn-clear" (click)="clearFilters()">Clear Filters</button>
+  </div>
+
+  @if (filteredItems$ | async; as items) {
+    <div class="results-info">
+      <span>{{ items.length }} item{{ items.length === 1 ? '' : 's' }} found</span>
+    </div>
+
+    @if (items.length === 0) {
+      <div class="empty-state">
+        <span class="empty-icon">📭</span>
+        <h3>No items found</h3>
+        <p>Try adjusting your search or filters.</p>
+      </div>
+    } @else {
+      <div class="items-grid">
+        @for (item of items; track item.id) {
+          <a [routerLink]="['/items', item.id]" class="item-card">
+            <div class="card-header">
+              <span class="type-badge" [class.lost]="item.type === 'lost'" [class.found]="item.type === 'found'">
+                {{ item.type === 'lost' ? 'Lost' : 'Found' }}
+              </span>
+              <span class="status-badge" [class]="item.status">{{ item.status }}</span>
+            </div>
+            <div class="card-body">
+              <h3>{{ getCategoryIcon(item.category) }} {{ item.title }}</h3>
+              <p class="item-description">{{ item.description }}</p>
+              <div class="item-meta">
+                <span class="meta-item">📍 {{ item.location }}</span>
+                <span class="meta-item">📅 {{ formatDate(item.date) }}</span>
+              </div>
+            </div>
+            <div class="card-footer">
+              <span class="reported-by">Reported by {{ item.reporterName }}</span>
+              <span class="time-ago">{{ timeAgo(item.reportedDate) }}</span>
+            </div>
+          </a>
+        }
+      </div>
+    }
+  }
+</div>

@@ -1,0 +1,44 @@
+<div class="overlay" (click)="onCancel()">
+  <div class="dialog" (click)="$event.stopPropagation()">
+    <div class="dialog-header">
+      <h2>🤝 Claim This Item</h2>
+      <button class="close-btn" (click)="onCancel()">&times;</button>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="dialog-body">
+        <p class="dialog-info">
+          Please provide your information and describe how this item belongs to you.
+        </p>
+
+        <div class="form-group">
+          <label for="claimedBy">Your Full Name *</label>
+          <input id="claimedBy" formControlName="claimedBy" placeholder="Enter your full name" />
+          @if (hasError('claimedBy', 'required')) {
+            <span class="error">Name is required</span>
+          }
+          @if (hasError('claimedBy', 'minlength')) {
+            <span class="error">Name must be at least 2 characters</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="description">Proof of Ownership / Description *</label>
+          <textarea id="description" formControlName="description" rows="4"
+            placeholder="Describe why this item is yours, include specific details only the owner would know..."></textarea>
+          @if (hasError('description', 'required')) {
+            <span class="error">Description is required</span>
+          }
+          @if (hasError('description', 'minlength')) {
+            <span class="error">Description must be at least 10 characters</span>
+          }
+        </div>
+      </div>
+
+      <div class="dialog-footer">
+        <button type="button" class="btn-cancel" (click)="onCancel()">Cancel</button>
+        <button type="submit" class="btn-submit">Submit Claim</button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,117 @@
+<div class="dashboard">
+  <div class="page-header">
+    <h1>Dashboard</h1>
+    <p class="subtitle">Overview of lost and found items</p>
+  </div>
+
+  @if (stats$ | async; as stats) {
+    <div class="stats-grid">
+      <div class="stat-card total">
+        <div class="stat-icon">📊</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ stats.totalLost + stats.totalFound }}</span>
+          <span class="stat-label">Total Reports</span>
+        </div>
+      </div>
+      <div class="stat-card lost">
+        <div class="stat-icon">🔴</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ stats.totalLost }}</span>
+          <span class="stat-label">Lost Items</span>
+        </div>
+      </div>
+      <div class="stat-card found">
+        <div class="stat-icon">🟢</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ stats.totalFound }}</span>
+          <span class="stat-label">Found Items</span>
+        </div>
+      </div>
+      <div class="stat-card open">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ stats.totalOpen }}</span>
+          <span class="stat-label">Open Cases</span>
+        </div>
+      </div>
+      <div class="stat-card claimed">
+        <div class="stat-icon">🤝</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ stats.totalClaimed }}</span>
+          <span class="stat-label">Claimed</span>
+        </div>
+      </div>
+      <div class="stat-card resolved">
+        <div class="stat-icon">✅</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ stats.totalResolved }}</span>
+          <span class="stat-label">Resolved</span>
+        </div>
+      </div>
+    </div>
+
+    @if (stats.totalLost + stats.totalFound > 0) {
+      <div class="categories-section">
+        <h2>Items by Category</h2>
+        <div class="category-chips">
+          @for (cat of categories; track cat.value) {
+            @if (stats.byCategory[cat.value]) {
+              <div class="category-chip">
+                <span class="chip-icon">{{ cat.icon }}</span>
+                <span class="chip-label">{{ cat.label }}</span>
+                <span class="chip-count">{{ stats.byCategory[cat.value] }}</span>
+              </div>
+            }
+          }
+        </div>
+      </div>
+    }
+  }
+
+  <div class="quick-actions">
+    <h2>Quick Actions</h2>
+    <div class="actions-grid">
+      <a routerLink="/report/lost" class="action-card lost">
+        <span class="action-icon">🚨</span>
+        <span class="action-title">Report Lost Item</span>
+        <span class="action-desc">Lost something? File a report to help others find it.</span>
+      </a>
+      <a routerLink="/report/found" class="action-card found">
+        <span class="action-icon">🎉</span>
+        <span class="action-title">Report Found Item</span>
+        <span class="action-desc">Found something? Report it so the owner can claim it.</span>
+      </a>
+      <a routerLink="/items" class="action-card browse">
+        <span class="action-icon">🔍</span>
+        <span class="action-title">Browse All Items</span>
+        <span class="action-desc">Search through all reported lost and found items.</span>
+      </a>
+    </div>
+  </div>
+
+  @if (recentItems$ | async; as recentItems) {
+    @if (recentItems.length > 0) {
+      <div class="recent-section">
+        <div class="section-header">
+          <h2>Recent Reports</h2>
+          <a routerLink="/items" class="view-all">View all →</a>
+        </div>
+        <div class="recent-grid">
+          @for (item of recentItems | slice:0:6; track item.id) {
+            <a [routerLink]="['/items', item.id]" class="recent-card">
+              <div class="recent-header">
+                <span class="type-badge" [class.lost]="item.type === 'lost'" [class.found]="item.type === 'found'">
+                  {{ item.type === 'lost' ? 'Lost' : 'Found' }}
+                </span>
+                <span class="status-badge" [class]="item.status">{{ item.status }}</span>
+              </div>
+              <h3>{{ getCategoryIcon(item.category) }} {{ item.title }}</h3>
+              <p class="recent-location">📍 {{ item.location }}</p>
+              <p class="recent-date">{{ formatDate(item.reportedDate) }}</p>
+            </a>
+          }
+        </div>
+      </div>
+    }
+  }
+</div>

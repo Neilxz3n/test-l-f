@@ -1,0 +1,111 @@
+<div class="report-page">
+  <div class="page-header" [class.lost]="isLost" [class.found]="!isLost">
+    <div class="header-content">
+      <span class="header-icon">{{ isLost ? '🚨' : '🎉' }}</span>
+      <div>
+        <h1>Report {{ isLost ? 'Lost' : 'Found' }} Item</h1>
+        <p class="subtitle">{{ isLost ? 'Provide details about the item you lost' : 'Describe the item you found' }}</p>
+      </div>
+    </div>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="report-form">
+    <div class="form-section">
+      <h2>Item Information</h2>
+
+      <div class="form-group">
+        <label for="title">Item Title *</label>
+        <input id="title" formControlName="title" placeholder="e.g., Blue Backpack, iPhone 15, Car Keys" />
+        @if (hasError('title', 'required')) {
+          <span class="error">Title is required</span>
+        }
+        @if (hasError('title', 'minlength')) {
+          <span class="error">Title must be at least 3 characters</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description *</label>
+        <textarea id="description" formControlName="description" rows="4"
+          placeholder="Provide a detailed description: color, brand, distinguishing marks, contents..."></textarea>
+        @if (hasError('description', 'required')) {
+          <span class="error">Description is required</span>
+        }
+        @if (hasError('description', 'minlength')) {
+          <span class="error">Description must be at least 10 characters</span>
+        }
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="category">Category *</label>
+          <select id="category" formControlName="category">
+            <option value="">Select a category</option>
+            @for (cat of categories; track cat.value) {
+              <option [value]="cat.value">{{ cat.icon }} {{ cat.label }}</option>
+            }
+          </select>
+          @if (hasError('category', 'required')) {
+            <span class="error">Category is required</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="date">Date {{ isLost ? 'Lost' : 'Found' }} *</label>
+          <input id="date" type="date" formControlName="date" />
+          @if (hasError('date', 'required')) {
+            <span class="error">Date is required</span>
+          }
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="location">Location *</label>
+        <input id="location" formControlName="location" placeholder="e.g., Central Library, 2nd Floor" />
+        @if (hasError('location', 'required')) {
+          <span class="error">Location is required</span>
+        }
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h2>Your Contact Information</h2>
+
+      <div class="form-group">
+        <label for="reporterName">Full Name *</label>
+        <input id="reporterName" formControlName="reporterName" placeholder="Your full name" />
+        @if (hasError('reporterName', 'required')) {
+          <span class="error">Name is required</span>
+        }
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="reporterEmail">Email *</label>
+          <input id="reporterEmail" type="email" formControlName="reporterEmail" placeholder="you@example.com" />
+          @if (hasError('reporterEmail', 'required')) {
+            <span class="error">Email is required</span>
+          }
+          @if (hasError('reporterEmail', 'email')) {
+            <span class="error">Please enter a valid email</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="reporterPhone">Phone *</label>
+          <input id="reporterPhone" type="tel" formControlName="reporterPhone" placeholder="555-0100" />
+          @if (hasError('reporterPhone', 'required')) {
+            <span class="error">Phone number is required</span>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn-cancel" (click)="router.navigate(['/items'])">Cancel</button>
+      <button type="submit" class="btn-submit" [class.lost]="isLost" [class.found]="!isLost">
+        Submit Report
+      </button>
+    </div>
+  </form>
+</div>

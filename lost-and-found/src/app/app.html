@@ -1,0 +1,18 @@
+<app-navbar />
+
+<main class="main-content">
+  <router-outlet />
+</main>
+
+<div class="notifications">
+  @for (notification of notificationService.notifications$ | async; track notification.id) {
+    <div class="notification" [class]="notification.type" (click)="notificationService.dismiss(notification.id)">
+      @switch (notification.type) {
+        @case ('success') { <span class="notif-icon">✅</span> }
+        @case ('error') { <span class="notif-icon">❌</span> }
+        @case ('info') { <span class="notif-icon">ℹ️</span> }
+      }
+      <span class="notif-message">{{ notification.message }}</span>
+    </div>
+  }
+</div>
