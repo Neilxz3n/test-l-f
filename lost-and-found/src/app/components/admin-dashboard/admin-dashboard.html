@@ -1,0 +1,143 @@
+<div class="admin-dashboard">
+  <div class="page-header">
+    <div class="header-left">
+      <span class="admin-badge">🛡️ ADMIN</span>
+      <h1>Admin Dashboard</h1>
+    </div>
+    <p class="subtitle">Manage all lost and found reports</p>
+  </div>
+
+  @if (stats$ | async; as stats) {
+    <div class="stats-grid">
+      <div class="stat-card total">
+        <div class="stat-icon">📊</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ stats.totalLost + stats.totalFound }}</span>
+          <span class="stat-label">Total Reports</span>
+        </div>
+      </div>
+      <div class="stat-card lost">
+        <div class="stat-icon">🔴</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ stats.totalLost }}</span>
+          <span class="stat-label">Lost Items</span>
+        </div>
+      </div>
+      <div class="stat-card found">
+        <div class="stat-icon">🟢</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ stats.totalFound }}</span>
+          <span class="stat-label">Found Items</span>
+        </div>
+      </div>
+      <div class="stat-card open">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ stats.totalOpen }}</span>
+          <span class="stat-label">Open</span>
+        </div>
+      </div>
+      <div class="stat-card claimed">
+        <div class="stat-icon">🤝</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ stats.totalClaimed }}</span>
+          <span class="stat-label">Claimed</span>
+        </div>
+      </div>
+      <div class="stat-card resolved">
+        <div class="stat-icon">✅</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ stats.totalResolved }}</span>
+          <span class="stat-label">Resolved</span>
+        </div>
+      </div>
+    </div>
+
+    @if (stats.totalLost + stats.totalFound > 0) {
+      <div class="categories-section">
+        <h2>Items by Category</h2>
+        <div class="category-chips">
+          @for (cat of categories; track cat.value) {
+            @if (stats.byCategory[cat.value]) {
+              <div class="category-chip">
+                <span class="chip-icon">{{ cat.icon }}</span>
+                <span class="chip-label">{{ cat.label }}</span>
+                <span class="chip-count">{{ stats.byCategory[cat.value] }}</span>
+              </div>
+            }
+          }
+        </div>
+      </div>
+    }
+  }
+
+  @if (allItems$ | async; as items) {
+    <div class="manage-section">
+      <div class="section-header">
+        <h2>🗂️ All Reports ({{ items.length }})</h2>
+        <a routerLink="/items" class="view-browse">Open Browse View →</a>
+      </div>
+
+      @if (items.length === 0) {
+        <div class="empty-state">
+          <span class="empty-icon">📭</span>
+          <h3>No reports yet</h3>
+          <p>Items will appear here when users submit reports.</p>
+        </div>
+      } @else {
+        <div class="items-table-wrapper">
+          <table class="items-table">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Type</th>
+                <th>Category</th>
+                <th>Location</th>
+                <th>Reporter</th>
+                <th>Status</th>
+                <th>Reported</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of items; track item.id) {
+                <tr>
+                  <td>
+                    <a [routerLink]="['/items', item.id]" class="item-link">
+                      {{ item.title }}
+                    </a>
+                  </td>
+                  <td>
+                    <span class="type-badge" [class.lost]="item.type === 'lost'" [class.found]="item.type === 'found'">
+                      {{ item.type }}
+                    </span>
+                  </td>
+                  <td>{{ getCategoryIcon(item.category) }} {{ getCategoryLabel(item.category) }}</td>
+                  <td class="cell-location">{{ item.location }}</td>
+                  <td class="cell-reporter">
+                    <span class="reporter-name">{{ item.reporterName }}</span>
+                    <span class="reporter-email">{{ item.reporterEmail }}</span>
+                  </td>
+                  <td>
+                    <span class="status-badge" [class]="item.status">{{ item.status }}</span>
+                  </td>
+                  <td class="cell-date">{{ formatDateTime(item.reportedDate) }}</td>
+                  <td class="cell-actions">
+                    @if (item.status === 'open' || item.status === 'claimed') {
+                      <button class="btn-action resolve" (click)="resolveItem($event, item.id)" title="Mark as resolved">
+                        ✅
+                      </button>
+                    }
+                    <button class="btn-action delete" (click)="deleteItem($event, item.id, item.title)" title="Delete">
+                      🗑️
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  }
+</div>

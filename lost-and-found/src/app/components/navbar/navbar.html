@@ -1,6 +1,6 @@
-<nav class="navbar">
+<nav class="navbar" [class.admin-mode]="authService.isAdmin">
   <div class="navbar-container">
-    <a class="navbar-brand" routerLink="/">
+    <a class="navbar-brand" [routerLink]="authService.isAdmin ? '/admin' : '/'">
       <span class="brand-icon">🔍</span>
       <span class="brand-text">Lost & Found</span>
     </a>
@@ -10,18 +10,34 @@
     </button>
 
     <div class="navbar-links" [class.open]="mobileMenuOpen">
-      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMobileMenu()">
-        <span class="nav-icon">📊</span> Dashboard
-      </a>
-      <a routerLink="/items" routerLinkActive="active" (click)="closeMobileMenu()">
-        <span class="nav-icon">📋</span> Browse Items
-      </a>
-      <a routerLink="/report/lost" routerLinkActive="active" class="btn-report lost" (click)="closeMobileMenu()">
-        Report Lost
-      </a>
-      <a routerLink="/report/found" routerLinkActive="active" class="btn-report found" (click)="closeMobileMenu()">
-        Report Found
-      </a>
+      @if (authService.isAdmin) {
+        <a routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMobileMenu()">
+          <span class="nav-icon">🛡️</span> Admin Panel
+        </a>
+        <a routerLink="/items" routerLinkActive="active" (click)="closeMobileMenu()">
+          <span class="nav-icon">📋</span> All Items
+        </a>
+      } @else {
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMobileMenu()">
+          <span class="nav-icon">🏠</span> Home
+        </a>
+        <a routerLink="/items" routerLinkActive="active" (click)="closeMobileMenu()">
+          <span class="nav-icon">📋</span> Browse Items
+        </a>
+        <a routerLink="/report/lost" routerLinkActive="active" class="btn-report lost" (click)="closeMobileMenu()">
+          Report Lost
+        </a>
+        <a routerLink="/report/found" routerLinkActive="active" class="btn-report found" (click)="closeMobileMenu()">
+          Report Found
+        </a>
+      }
+
+      <button class="role-toggle" (click)="toggleRole()" [class.is-admin]="authService.isAdmin">
+        <span class="toggle-track">
+          <span class="toggle-thumb"></span>
+        </span>
+        <span class="toggle-label">{{ authService.isAdmin ? 'Admin' : 'User' }}</span>
+      </button>
     </div>
   </div>
 </nav>

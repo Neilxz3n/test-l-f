@@ -1,75 +1,15 @@
 <div class="dashboard">
   <div class="page-header">
-    <h1>Dashboard</h1>
-    <p class="subtitle">Overview of lost and found items</p>
-  </div>
-
-  @if (stats$ | async; as stats) {
-    <div class="stats-grid">
-      <div class="stat-card total">
-        <div class="stat-icon">📊</div>
-        <div class="stat-info">
-          <span class="stat-value">{{ stats.totalLost + stats.totalFound }}</span>
-          <span class="stat-label">Total Reports</span>
-        </div>
-      </div>
-      <div class="stat-card lost">
-        <div class="stat-icon">🔴</div>
-        <div class="stat-info">
-          <span class="stat-value">{{ stats.totalLost }}</span>
-          <span class="stat-label">Lost Items</span>
-        </div>
-      </div>
-      <div class="stat-card found">
-        <div class="stat-icon">🟢</div>
-        <div class="stat-info">
-          <span class="stat-value">{{ stats.totalFound }}</span>
-          <span class="stat-label">Found Items</span>
-        </div>
-      </div>
-      <div class="stat-card open">
-        <div class="stat-icon">⏳</div>
-        <div class="stat-info">
-          <span class="stat-value">{{ stats.totalOpen }}</span>
-          <span class="stat-label">Open Cases</span>
-        </div>
-      </div>
-      <div class="stat-card claimed">
-        <div class="stat-icon">🤝</div>
-        <div class="stat-info">
-          <span class="stat-value">{{ stats.totalClaimed }}</span>
-          <span class="stat-label">Claimed</span>
-        </div>
-      </div>
-      <div class="stat-card resolved">
-        <div class="stat-icon">✅</div>
-        <div class="stat-info">
-          <span class="stat-value">{{ stats.totalResolved }}</span>
-          <span class="stat-label">Resolved</span>
-        </div>
+    <div class="welcome-banner">
+      <div class="welcome-text">
+        <h1>👋 Welcome to Lost & Found</h1>
+        <p class="subtitle">Report lost items, browse found items, and reclaim what's yours.</p>
       </div>
     </div>
-
-    @if (stats.totalLost + stats.totalFound > 0) {
-      <div class="categories-section">
-        <h2>Items by Category</h2>
-        <div class="category-chips">
-          @for (cat of categories; track cat.value) {
-            @if (stats.byCategory[cat.value]) {
-              <div class="category-chip">
-                <span class="chip-icon">{{ cat.icon }}</span>
-                <span class="chip-label">{{ cat.label }}</span>
-                <span class="chip-count">{{ stats.byCategory[cat.value] }}</span>
-              </div>
-            }
-          }
-        </div>
-      </div>
-    }
-  }
+  </div>
 
   <div class="quick-actions">
-    <h2>Quick Actions</h2>
+    <h2>What would you like to do?</h2>
     <div class="actions-grid">
       <a routerLink="/report/lost" class="action-card lost">
         <span class="action-icon">🚨</span>
@@ -88,6 +28,31 @@
       </a>
     </div>
   </div>
+
+  @if (stats$ | async; as stats) {
+    <div class="user-stats">
+      <div class="stat-pill lost">
+        <span class="stat-icon">🔴</span>
+        <span class="stat-num">{{ stats.totalLost }}</span>
+        <span class="stat-txt">Lost</span>
+      </div>
+      <div class="stat-pill found">
+        <span class="stat-icon">🟢</span>
+        <span class="stat-num">{{ stats.totalFound }}</span>
+        <span class="stat-txt">Found</span>
+      </div>
+      <div class="stat-pill open">
+        <span class="stat-icon">⏳</span>
+        <span class="stat-num">{{ stats.totalOpen }}</span>
+        <span class="stat-txt">Open</span>
+      </div>
+      <div class="stat-pill resolved">
+        <span class="stat-icon">✅</span>
+        <span class="stat-num">{{ stats.totalResolved }}</span>
+        <span class="stat-txt">Resolved</span>
+      </div>
+    </div>
+  }
 
   @if (recentItems$ | async; as recentItems) {
     @if (recentItems.length > 0) {

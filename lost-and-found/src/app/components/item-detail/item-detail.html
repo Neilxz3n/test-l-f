@@ -75,19 +75,24 @@
         }
 
         <div class="actions">
-          @if (item.status === 'open') {
+          <!-- User actions -->
+          @if (!authService.isAdmin && item.status === 'open') {
             <button class="btn-claim" (click)="openClaimDialog()">
               🤝 Claim This Item
             </button>
           }
-          @if (item.status === 'claimed') {
-            <button class="btn-resolve" (click)="resolveItem(item.id)">
-              ✅ Mark as Resolved
+
+          <!-- Admin actions -->
+          @if (authService.isAdmin) {
+            @if (item.status === 'open' || item.status === 'claimed') {
+              <button class="btn-resolve" (click)="resolveItem(item.id)">
+                ✅ Mark as Resolved
+              </button>
+            }
+            <button class="btn-delete" (click)="deleteItem(item.id)">
+              🗑️ Delete Report
             </button>
           }
-          <button class="btn-delete" (click)="deleteItem(item.id)">
-            🗑️ Delete Report
-          </button>
         </div>
       </div>
     </div>

@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ItemService } from '../../services/item.service';
 import { NotificationService } from '../../services/notification.service';
+import { AuthService } from '../../services/auth.service';
 import { Item, ITEM_CATEGORIES } from '../../models/item.model';
 import { ClaimDialogComponent } from '../claim-dialog/claim-dialog';
 
@@ -19,6 +20,7 @@ export class ItemDetailComponent implements OnInit {
   private router = inject(Router);
   private itemService = inject(ItemService);
   private notificationService = inject(NotificationService);
+  authService = inject(AuthService);
 
   item$!: Observable<Item | undefined>;
   showClaimDialog = false;
@@ -72,7 +74,7 @@ export class ItemDetailComponent implements OnInit {
     if (confirm('Are you sure you want to delete this item report?')) {
       this.itemService.deleteItem(id);
       this.notificationService.show('Item deleted.', 'info');
-      this.router.navigate(['/items']);
+      this.router.navigate([this.authService.isAdmin ? '/admin' : '/items']);
     }
   }
 }
