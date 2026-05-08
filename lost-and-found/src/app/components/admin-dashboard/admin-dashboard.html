@@ -75,7 +75,10 @@
     <div class="manage-section">
       <div class="section-header">
         <h2>🗂️ All Reports ({{ items.length }})</h2>
-        <a routerLink="/items" class="view-browse">Open Browse View →</a>
+        <div class="header-links">
+          <a routerLink="/emails" class="view-browse">📧 Email Log</a>
+          <a routerLink="/items" class="view-browse">Open Browse View →</a>
+        </div>
       </div>
 
       @if (items.length === 0) {
@@ -94,6 +97,7 @@
                 <th>Category</th>
                 <th>Location</th>
                 <th>Reporter</th>
+                <th>Claimant</th>
                 <th>Status</th>
                 <th>Reported</th>
                 <th>Actions</th>
@@ -101,7 +105,7 @@
             </thead>
             <tbody>
               @for (item of items; track item.id) {
-                <tr>
+                <tr [class.claimed-row]="item.status === 'claimed'">
                   <td>
                     <a [routerLink]="['/items', item.id]" class="item-link">
                       {{ item.title }}
@@ -118,12 +122,24 @@
                     <span class="reporter-name">{{ item.reporterName }}</span>
                     <span class="reporter-email">{{ item.reporterEmail }}</span>
                   </td>
+                  <td class="cell-claimant">
+                    @if (item.claimedBy) {
+                      <span class="claimant-name">{{ item.claimedBy }}</span>
+                    } @else {
+                      <span class="no-claimant">—</span>
+                    }
+                  </td>
                   <td>
                     <span class="status-badge" [class]="item.status">{{ item.status }}</span>
                   </td>
                   <td class="cell-date">{{ formatDateTime(item.reportedDate) }}</td>
                   <td class="cell-actions">
-                    @if (item.status === 'open' || item.status === 'claimed') {
+                    @if (item.status === 'claimed') {
+                      <button class="btn-action approve" (click)="approveClaim($event, item)" title="Approve claim &amp; send email">
+                        📧 Approve
+                      </button>
+                    }
+                    @if (item.status === 'open') {
                       <button class="btn-action resolve" (click)="resolveItem($event, item.id)" title="Mark as resolved">
                         ✅
                       </button>

@@ -180,6 +180,12 @@
     &:hover { background: linear-gradient(135deg, #4f46e5, #7c3aed); }
   }
 
+  .btn-approve {
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    color: #fff;
+    &:hover { background: linear-gradient(135deg, #4f46e5, #4338ca); }
+  }
+
   .btn-resolve {
     background: linear-gradient(135deg, #22c55e, #16a34a);
     color: #fff;

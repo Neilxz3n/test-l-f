@@ -17,6 +17,14 @@
         <a routerLink="/items" routerLinkActive="active" (click)="closeMobileMenu()">
           <span class="nav-icon">📋</span> All Items
         </a>
+        <a routerLink="/emails" routerLinkActive="active" class="email-link" (click)="closeMobileMenu()">
+          <span class="nav-icon">📧</span> Emails
+          @if (emailService.unreadCount$ | async; as unread) {
+            @if (unread > 0) {
+              <span class="unread-badge">{{ unread }}</span>
+            }
+          }
+        </a>
       } @else {
         <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMobileMenu()">
           <span class="nav-icon">🏠</span> Home

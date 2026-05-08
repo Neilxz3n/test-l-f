@@ -3,6 +3,7 @@ import { AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ItemService } from '../../services/item.service';
+import { EmailService } from '../../services/email.service';
 import { NotificationService } from '../../services/notification.service';
 import { Item, ITEM_CATEGORIES } from '../../models/item.model';
 
@@ -15,6 +16,7 @@ import { Item, ITEM_CATEGORIES } from '../../models/item.model';
 })
 export class AdminDashboardComponent implements OnInit {
   private itemService = inject(ItemService);
+  private emailService = inject(EmailService);
   private notificationService = inject(NotificationService);
 
   stats$ = this.itemService.getStats$();
@@ -49,6 +51,17 @@ export class AdminDashboardComponent implements OnInit {
       hour: 'numeric',
       minute: '2-digit',
     });
+  }
+
+  approveClaim(event: Event, item: Item): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.itemService.resolveItem(item.id);
+    const email = this.emailService.sendClaimApprovalEmail(item);
+    this.notificationService.show(
+      `Claim approved! Email sent to ${email.toName} (${email.to}).`,
+      'success'
+    );
   }
 
   resolveItem(event: Event, id: string): void {

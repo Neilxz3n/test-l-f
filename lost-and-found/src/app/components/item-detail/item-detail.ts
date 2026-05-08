@@ -3,6 +3,7 @@ import { AsyncPipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ItemService } from '../../services/item.service';
+import { EmailService } from '../../services/email.service';
 import { NotificationService } from '../../services/notification.service';
 import { AuthService } from '../../services/auth.service';
 import { Item, ITEM_CATEGORIES } from '../../models/item.model';
@@ -19,6 +20,7 @@ export class ItemDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private itemService = inject(ItemService);
+  private emailService = inject(EmailService);
   private notificationService = inject(NotificationService);
   authService = inject(AuthService);
 
@@ -62,7 +64,16 @@ export class ItemDetailComponent implements OnInit {
   onClaimSubmitted(data: { claimedBy: string; description: string }, itemId: string): void {
     this.itemService.claimItem(itemId, data.claimedBy, data.description);
     this.showClaimDialog = false;
-    this.notificationService.show('Item claimed successfully! The reporter will be notified.', 'success');
+    this.notificationService.show('Item claimed successfully! Awaiting admin approval.', 'success');
+  }
+
+  approveClaim(item: Item): void {
+    this.itemService.resolveItem(item.id);
+    const email = this.emailService.sendClaimApprovalEmail(item);
+    this.notificationService.show(
+      `Claim approved! Email sent to ${email.toName} (${email.to}).`,
+      'success'
+    );
   }
 
   resolveItem(id: string): void {

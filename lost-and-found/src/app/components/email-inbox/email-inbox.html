@@ -1,0 +1,54 @@
+<div class="inbox-page">
+  <div class="page-header">
+    <div class="header-left">
+      <span class="inbox-icon">📧</span>
+      <h1>Email Notifications</h1>
+    </div>
+    <p class="subtitle">Simulated email notifications sent when claims are approved</p>
+  </div>
+
+  @if (emails$ | async; as emails) {
+    @if (emails.length > 0) {
+      <div class="inbox-actions">
+        <span class="email-count">{{ emails.length }} email{{ emails.length === 1 ? '' : 's' }}</span>
+        <button class="btn-mark-all" (click)="markAllRead()">Mark all as read</button>
+      </div>
+
+      <div class="email-list">
+        @for (email of emails; track email.id) {
+          <div class="email-card" [class.unread]="!email.read" [class.expanded]="expandedId === email.id">
+            <div class="email-summary" (click)="toggleEmail(email.id)">
+              <div class="email-indicator" [class.unread]="!email.read"></div>
+              <div class="email-main">
+                <div class="email-top-row">
+                  <span class="email-to">
+                    To: <strong>{{ email.toName }}</strong>
+                    <span class="email-address">&lt;{{ email.to }}&gt;</span>
+                  </span>
+                  <span class="email-time">{{ formatDateTime(email.sentAt) }}</span>
+                </div>
+                <div class="email-subject">{{ email.subject }}</div>
+                <div class="email-preview">
+                  Re: <a [routerLink]="['/items', email.itemId]" (click)="$event.stopPropagation()">{{ email.itemTitle }}</a>
+                </div>
+              </div>
+              <span class="expand-icon">{{ expandedId === email.id ? '▲' : '▼' }}</span>
+            </div>
+
+            @if (expandedId === email.id) {
+              <div class="email-body">
+                <pre class="email-content">{{ email.body }}</pre>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="empty-state">
+        <span class="empty-icon">📭</span>
+        <h3>No emails sent yet</h3>
+        <p>Email notifications will appear here when an admin approves a claim.</p>
+      </div>
+    }
+  }
+</div>

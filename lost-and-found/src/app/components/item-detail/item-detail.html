@@ -84,7 +84,12 @@
 
           <!-- Admin actions -->
           @if (authService.isAdmin) {
-            @if (item.status === 'open' || item.status === 'claimed') {
+            @if (item.status === 'claimed') {
+              <button class="btn-approve" (click)="approveClaim(item)">
+                📧 Approve Claim & Notify
+              </button>
+            }
+            @if (item.status === 'open') {
               <button class="btn-resolve" (click)="resolveItem(item.id)">
                 ✅ Mark as Resolved
               </button>

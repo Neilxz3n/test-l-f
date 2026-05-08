@@ -116,6 +116,12 @@
       color: #1f2937;
     }
 
+    .header-links {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
     .view-browse {
       color: #6366f1;
       text-decoration: none;
@@ -211,6 +217,16 @@
   }
 }
 
+.cell-claimant {
+  .claimant-name {
+    font-weight: 500;
+    color: #6366f1;
+  }
+  .no-claimant {
+    color: #d1d5db;
+  }
+}
+
 .cell-date {
   white-space: nowrap;
   font-size: 0.8rem;
@@ -235,10 +251,29 @@
     border-color: #bbf7d0;
   }
 
+  &.approve {
+    background: #eef2ff;
+    border-color: #c7d2fe;
+    color: #4f46e5;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.3rem 0.6rem;
+
+    &:hover {
+      background: #6366f1;
+      border-color: #6366f1;
+      color: #fff;
+    }
+  }
+
   &.delete:hover {
     background: #fef2f2;
     border-color: #fecaca;
   }
+}
+
+.claimed-row {
+  background: #fefce8;
 }
 
 .type-badge {
